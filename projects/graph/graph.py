@@ -93,14 +93,12 @@ class Graph:
 
         This should be done using recursion.
         """
-        print(starting_vertex, ' starting_vertex')
-        print(visited, ' has been visited')
-
-
+        visited.add(starting_vertex)
+        print(starting_vertex)
         for neighbor in self.get_neighbors(starting_vertex):
-            if starting_vertex not in visited:
-                visited.add(starting_vertex)
-                return self.dft_recursive(neighbor, visited)
+            if neighbor not in visited:
+                self.dft_recursive(neighbor)
+        return visited
         
 
     def bfs(self, starting_vertex, destination_vertex):
