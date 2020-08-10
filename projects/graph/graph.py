@@ -120,23 +120,26 @@ class Graph:
             # dequeue the first PATH
             pth = q.dequeue()
             # grab the last vertex from the Path
-            last_v = pth[-1]
-            # print(last_v, ' is the last vertex from the path.')
+            current_vertex = pth[-1]
+            # print(current_vertex, ' is the last vertex from the path.')
 
             # check if the vertex has not been visited
-            if last_v not in visited:
+            if current_vertex not in visited:
                 # is this vertex the target?
-                if last_v == destination_vertex:
+                if current_vertex == destination_vertex:
                     # return the path
                     return pth
                 # mark it as visited
-                visited.add(last_v)
+                visited.add(current_vertex)
 
                 # then add A Path to its neighbors to the back of the queue
-
-                # make a copy of the path
-                # append the neighbor to the back of the path
-                # enqueue out new path
+                for neighbor in self.get_neighbors(current_vertex):
+                    # make a copy of the path
+                    new_pth = list(pth)
+                    # append the neighbor to the back of the path
+                    new_pth.append(neighbor)
+                    # enqueue out new path
+                    q.enqueue(new_pth)
 
         # return none
 
