@@ -194,21 +194,24 @@ class Graph:
 
         This should be done using recursion.
         """
-
-        if starting_vertex == destination_vertex:
-            # return the path
-            return path
-
-        path.append(starting_vertex)
-
         # mark it as visited
         visited.add(starting_vertex)
 
-        # then add A Path to its neighbors to the back of the queue
+        # path.append(starting_vertex)
+        path = path + [starting_vertex]
+        print(path, ' path after append')
+
+
+        if starting_vertex == destination_vertex:
+            return path
+
         for neighbor in self.get_neighbors(starting_vertex):
             if neighbor not in visited:
-                path = self.dfs_recursive(neighbor, destination_vertex, visited, path)
-                return path
+                new_path = self.dfs_recursive(neighbor, destination_vertex, visited, path)
+                if new_path:
+                    return new_path
+        return None
+
 
 
 if __name__ == '__main__':
