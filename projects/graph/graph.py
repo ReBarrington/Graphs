@@ -93,14 +93,16 @@ class Graph:
 
         This should be done using recursion.
         """
-        visited = visited
+        print(starting_vertex, ' starting_vertex')
+        print(visited, ' visited')
 
-        if starting_vertex not in visited:
-            visited.add(starting_vertex)
-            print(starting_vertex, ' recursive starting_vertex')
 
-            for next_vertex in self.get_neighbors(starting_vertex):
+        visited.add(starting_vertex)
+
+        for next_vertex in self.get_neighbors(starting_vertex):
+            if starting_vertex not in visited:
                 return self.dft_recursive(next_vertex, visited)
+        
 
     def bfs(self, starting_vertex, destination_vertex):
         """
@@ -108,7 +110,38 @@ class Graph:
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        pass  # TODO
+        # create an empty queue and enqueue PATH To the Starting Vertex
+        q = Queue()
+        q.enqueue([starting_vertex])
+
+        # q.enqueue([starting_vertex_id])
+        # create a set to store visited vertices
+        visited = set()
+
+        # while the queue is not empty
+        while q.size() > 0:
+            # dequeue the first PATH
+            pth = q.dequeue()
+            # grab the last vertex from the Path
+            last_v = pth[-1]
+            # print(last_v, ' is the last vertex from the path.')
+
+            # check if the vertex has not been visited
+            if last_v not in visited:
+                # is this vertex the target?
+                if last_v == destination_vertex:
+                    # return the path
+                    return pth
+                # mark it as visited
+                visited.add(last_v)
+
+                # then add A Path to its neighbors to the back of the queue
+
+                # make a copy of the path
+                # append the neighbor to the back of the path
+                # enqueue out new path
+
+        # return none
 
     def dfs(self, starting_vertex, destination_vertex):
         """
@@ -153,7 +186,7 @@ if __name__ == '__main__':
     Should print:
         {1: {2}, 2: {3, 4}, 3: {5}, 4: {6, 7}, 5: {3}, 6: {3}, 7: {1, 6}}
     '''
-    print(graph.vertices)
+    # print(graph.vertices)
 
     '''
     Valid BFT paths:
@@ -180,7 +213,7 @@ if __name__ == '__main__':
         1, 2, 4, 6, 3, 5, 7
     '''
     graph.dft(1)
-    graph.dft_recursive(1)
+    graph.dft_recursive(1) 
 
     '''
     Valid BFS path:
