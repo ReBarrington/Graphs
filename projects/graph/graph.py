@@ -157,7 +157,7 @@ class Graph:
         # create a set to store visited vertices
         visited = set()
 
-        # while the queue is not empty
+        # while the stack is not empty
         while s.size() > 0:
             # pop the first PATH
             pth = s.pop()
@@ -174,13 +174,13 @@ class Graph:
                 # mark it as visited
                 visited.add(current_vertex)
 
-                # then add A Path to its neighbors to the back of the queue
+                # then add A Path to its neighbors to the back of the stack
                 for neighbor in self.get_neighbors(current_vertex):
                     # make a copy of the path
                     new_pth = list(pth)
                     # append the neighbor to the back of the path
                     new_pth.append(neighbor)
-                    # enqueue out new path
+                    # push out new path
                     s.push(new_pth)
 
         # return none
