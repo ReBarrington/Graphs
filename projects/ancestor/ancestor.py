@@ -17,14 +17,13 @@ def earliest_ancestor(ancestors, starting_node):
         elif child in relationships:
             relationships[child].append(parent)
 
-    print(relationships, ' RELATIONSHIPS')
+    # print(relationships, ' relationships')
     
     if starting_node not in relationships.keys():
         # not a key, means no parents
         return -1
 
     else:
-
         # stack the starting node
         s.push(starting_node)
 
@@ -33,12 +32,12 @@ def earliest_ancestor(ancestors, starting_node):
 
             if top_node not in visited:
                 visited.add(top_node)
-
-                print(top_node, ' has been visited.')
+                # print(top_node, ' has been visited.')
 
                 # if top node has parents
                 if top_node in relationships.keys():
                     for parent_of_top_node in relationships.get(top_node):
+                        # print(top_node, ' has parents. Putting ', parent_of_top_node, ' on stack.')
                         s.push(parent_of_top_node)
 
         return top_node
