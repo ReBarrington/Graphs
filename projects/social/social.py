@@ -1,4 +1,5 @@
 import random
+from util import Stack
 
 class User:
     def __init__(self, name):
@@ -21,6 +22,9 @@ class SocialGraph:
         else:
             self.friendships[user_id].add(friend_id)
             self.friendships[friend_id].add(user_id)
+
+    def get_friends(self):
+        return self.friendships
 
     def add_user(self, name):
         """
@@ -80,20 +84,50 @@ class SocialGraph:
 
         The key is the friend's ID and the value is the path.
         """
-        visited = {}  # Note that this is a dictionary, not a set
-        
-        # start with user_id and follow a connection until it stops. 
-        # record inside visited as user: [path]
-        # path should be shortest path
-        
 
+        # create an empty stack and push PATH To the Starting Vertex
+        s = Stack()
+        s.push([user_id])
 
-        return visited
+        # create a set to store visited vertices
+        visited = set()
+        degrees_of_separation = {}
+
+        # while the stack is not empty
+        while s.size() > 0:
+            # pop the first PATH
+            pth = s.pop()
+            print(pth, ' is pth')
+            # grab the last vertex from the Path
+            current_user = pth[-1]
+            # print(current_user, ' is the last vertex from the path.')
+
+            # check if the vertex has not been visited
+            if current_user not in visited:
+                # is this vertex the target?
+                if current_user == user_id:
+                    degrees_of_separation[current_user] = pth
+                    user_id = pth[-1]
+                # mark it as visited
+                visited.add(current_user)
+
+                # then add a path to its friends to the back of the stack
+                for friend in self.friendships.get(current_user):
+                    print(friend, ' should be friend of ', current_user )
+                    user_id = friend
+                    # make a copy of the path
+                    new_pth = list(pth)
+                    # append the neighbor to the back of the path
+                    new_pth.append(friend)
+                    # push out new path
+                    s.push(new_pth)
+
+        return degrees_of_separation
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
     sg.populate_graph(10, 2)
-    print(sg.friendships)
+    print(sg.friendships, ' friendships')
     connections = sg.get_all_social_paths(1)
-    print(connections)
+    print(connections, ' get_all_social_paths')
