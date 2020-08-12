@@ -96,16 +96,16 @@ class SocialGraph:
         # while the stack is not empty
         while q.size() > 0:
             # dequeue the first PATH
-            pth = q.dequeue()
-            print(pth, ' is pth')
+            path = q.dequeue()
+            print(path, ' is path')
             # grab the last vertex from the Path
-            current_user = pth[-1]
+            current_user = path[-1]
             # print(current_user, ' is the last vertex from the path.')
 
             # check if the vertex has not been visited
             if current_user not in visited:
                 # is this vertex the target?
-                degrees_of_separation[current_user] = pth
+                degrees_of_separation[current_user] = path
                 # mark it as visited
                 visited.add(current_user)
 
@@ -113,11 +113,11 @@ class SocialGraph:
                 for friend in self.friendships.get(current_user):
                     print(friend, ' should be friend of ', current_user )
                     # make a copy of the path
-                    new_pth = list(pth)
+                    new_path = list(path)
                     # append the neighbor to the back of the path
-                    new_pth.append(friend)
+                    new_path.append(friend)
                     # push out new path
-                    q.enqueue(new_pth)
+                    q.enqueue(new_path)
 
         return degrees_of_separation
 
