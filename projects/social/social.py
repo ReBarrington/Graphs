@@ -1,5 +1,5 @@
 import random
-from util import Stack
+from util import Queue
 
 class User:
     def __init__(self, name):
@@ -86,17 +86,17 @@ class SocialGraph:
         """
 
         # create an empty stack and push PATH To the Starting Vertex
-        s = Stack()
-        s.push([user_id])
+        q = Queue()
+        q.enqueue([user_id])
 
         # create a set to store visited vertices
         visited = set()
         degrees_of_separation = {}
 
         # while the stack is not empty
-        while s.size() > 0:
-            # pop the first PATH
-            pth = s.pop()
+        while q.size() > 0:
+            # dequeue the first PATH
+            pth = q.dequeue()
             print(pth, ' is pth')
             # grab the last vertex from the Path
             current_user = pth[-1]
@@ -105,22 +105,19 @@ class SocialGraph:
             # check if the vertex has not been visited
             if current_user not in visited:
                 # is this vertex the target?
-                if current_user == user_id:
-                    degrees_of_separation[current_user] = pth
-                    user_id = pth[-1]
+                degrees_of_separation[current_user] = pth
                 # mark it as visited
                 visited.add(current_user)
 
                 # then add a path to its friends to the back of the stack
                 for friend in self.friendships.get(current_user):
                     print(friend, ' should be friend of ', current_user )
-                    user_id = friend
                     # make a copy of the path
                     new_pth = list(pth)
                     # append the neighbor to the back of the path
                     new_pth.append(friend)
                     # push out new path
-                    s.push(new_pth)
+                    q.enqueue(new_pth)
 
         return degrees_of_separation
 
