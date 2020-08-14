@@ -53,15 +53,21 @@ mapped_dict = dict()
 player.current_room = world.starting_room
 visited_rooms.add(player.current_room)
 
+# q of rooms visited
 q = Queue()
-q.enqueue(player.current_room)
+q.enqueue([player.current_room])
+
 
 # for move in traversal_path:
 # while q.size() > 0:
 while len(room_graph) > len(visited_rooms):
 
     # let current_room be equal to q.dequeue
-    current_room = q.dequeue()
+    current_path = q.dequeue()
+    current_room = current_path[-1]
+    # current_path is not an array after dead end.
+
+    print(f'CURRENT PATH: {current_path}')
 
     print(f'CURRENT ROOM: {current_room.name}')
 
@@ -77,14 +83,15 @@ while len(room_graph) > len(visited_rooms):
             # if player.current_room.return_opposite_direction(exit) is not None:
             #     direction_of_prev = player.current_room.return_opposite_direction(exit)
 
-            q.enqueue(current_room.get_room_in_direction(exit))
-
+            new_path = list(current_path)
+            new_path.append(current_room.get_room_in_direction(exit))
+            q.enqueue(new_path)
             print('recording ', exit)
             traversal_path.append(exit)
 
-    print('moving ', exit)
-    player.travel(exit)
-
+            print('moving ', exit)
+            player.travel(exit)
+            break
 
             # print(q.queue, ' is queue')
             # print(traversal_path, ' is traversal path')
