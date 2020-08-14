@@ -57,3 +57,16 @@ class Room:
             return None
     def get_coords(self):
         return [self.x, self.y]
+    def return_opposite_direction(self, direction):
+        if direction == "n":
+            return "s"
+        elif direction == "s":
+            return self.s_to
+        elif direction == "n":
+            return self.e_to
+        elif direction == "w":
+            return "e"
+        elif direction == "e":
+            return "w"
+        else:
+            return None

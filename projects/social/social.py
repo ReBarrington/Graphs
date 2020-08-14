@@ -1,3 +1,6 @@
+import random
+from util import Queue
+
 class User:
     def __init__(self, name):
         self.name = name
@@ -20,6 +23,9 @@ class SocialGraph:
             self.friendships[user_id].add(friend_id)
             self.friendships[friend_id].add(user_id)
 
+    def get_friends(self):
+        return self.friendships
+
     def add_user(self, name):
         """
         Create a new user with a sequential integer ID
@@ -32,10 +38,8 @@ class SocialGraph:
         """
         Takes a number of users and an average number of friendships
         as arguments
-
         Creates that number of users and a randomly distributed friendships
         between those users.
-
         The number of users must be greater than the average number of friendships.
         """
         # Reset graph
@@ -45,8 +49,31 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
+        for i in range(0, num_users):
+            self.add_user(f"User {i}")
+
 
         # Create friendships
+        # generate all possible friendship combinations
+        possible_friendships = []
+
+        # avoid dups by ensuring first num < second num
+        for user_id in self.users:
+            for friend_id in range(user_id + 1, self.last_id + 1):
+                possible_friendships.append((user_id, friend_id))
+
+        # shuffle friendships
+        random.shuffle(possible_friendships)
+
+        # create friendships from the first N pairs of the list
+        # N -> num_users * avg_friendships // 2
+        N = num_users * avg_friendships // 2
+        for i in range(N):
+            friendship = possible_friendships[i]
+            # user_id, friend_id = friendship
+            user_id = friendship[0]
+            friend_id = friendship[1]
+            self.add_friendship(user_id, friend_id)
 
     def get_all_social_paths(self, user_id):
         """
@@ -57,14 +84,47 @@ class SocialGraph:
 
         The key is the friend's ID and the value is the path.
         """
-        visited = {}  # Note that this is a dictionary, not a set
-        # !!!! IMPLEMENT ME
-        return visited
+
+        # create an empty stack and push PATH To the Starting Vertex
+        q = Queue()
+        q.enqueue([user_id])
+
+        # create a set to store visited vertices
+        visited = set()
+        degrees_of_separation = {}
+
+        # while the stack is not empty
+        while q.size() > 0:
+            # dequeue the first PATH
+            path = q.dequeue()
+            print(path, ' is path')
+            # grab the last vertex from the Path
+            current_user = path[-1]
+            # print(current_user, ' is the last vertex from the path.')
+
+            # check if the vertex has not been visited
+            if current_user not in visited:
+                # is this vertex the target?
+                degrees_of_separation[current_user] = path
+                # mark it as visited
+                visited.add(current_user)
+
+                # then add a path to its friends to the back of the stack
+                for friend in self.friendships.get(current_user):
+                    print(friend, ' should be friend of ', current_user )
+                    # make a copy of the path
+                    new_path = list(path)
+                    # append the neighbor to the back of the path
+                    new_path.append(friend)
+                    # push out new path
+                    q.enqueue(new_path)
+
+        return degrees_of_separation
 
 
 if __name__ == '__main__':
     sg = SocialGraph()
     sg.populate_graph(10, 2)
-    print(sg.friendships)
+    print(sg.friendships, ' friendships')
     connections = sg.get_all_social_paths(1)
-    print(connections)
+    print(connections, ' get_all_social_paths')
