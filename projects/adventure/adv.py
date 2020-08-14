@@ -27,62 +27,68 @@ world.print_rooms()
 player = Player(world.starting_room)
 
 # Fill this out with directions to walk
-traversal_path = []
+traversal_path = ['n']
 
 q = Queue()
 q.enqueue([traversal_path])
 
 # TRAVERSAL TEST
 visited_rooms = set()
-traversal_graph = dict()
+mapped_dict = dict()
 
 player.current_room = world.starting_room
 
+def initialize_room():
+    print(f' Initializing {player.current_room.name}')
+    visited_rooms.add(player.current_room.name)
+    mapped_dict[player.current_room.id] = dict()
 
-while len(visited_rooms) < len(room_graph):
+    for exit in player.current_room.get_exits():
+        # Initialize all directions as "?" as this room has not been visited.
+        mapped_dict[player.current_room.id][exit] = "?"
+
+    try: 
+        mapped_dict[player.current_room.id][direction_of_prev] = prev_room.id
+    except:
+        pass
+
+    print(mapped_dict)
+
+
+while q.size() > 0:
+
+    last_direction = q.dequeue()
 
     print(f'in  {player.current_room.name}')
     print(f'exits: {player.current_room.get_exits()}')
+    print(f' visited:  {visited_rooms}' )
 
     if player.current_room.name not in visited_rooms:
-        print("Haven't visited this room before. Initializing: ")
-        visited_rooms.add(player.current_room.name)
+        initialize_room()
 
-        traversal_graph[player.current_room.id] = dict()
+    # for each possible direction
+    for key, value in (mapped_dict[player.current_room.id].items()):
 
-        for exit in player.current_room.get_exits():
-            # Initialize all directions as "?" as this room has not been visited.
-            traversal_graph[player.current_room.id][exit] = "?"
+        if value == "?":
+            print(key,' is unexplored.')
+            move = key
 
+            prev_room = player.current_room
+            direction_of_prev = player.current_room.return_opposite_direction(move)
 
-        try: 
-            traversal_graph[player.current_room.id][direction_of_prev] = prev_room.id
-        except:
-            pass
+            mapped_dict[player.current_room.id][move] = player.current_room.get_room_in_direction(move).id
+            print(' UPDATING INFO: ', mapped_dict)
 
-        print(traversal_graph)
-
-
-        for key, value in (traversal_graph[player.current_room.id].items()):
-
-            if value == "?":
-                print(key,' is unexplored.')
-                move = key
-
-                prev_room = player.current_room
-                direction_of_prev = player.current_room.return_opposite_direction(move)
-
-                traversal_graph[player.current_room.id][move] = player.current_room.get_room_in_direction(move).id
-                print('moving ', move)
-                print(' UPDATING INFO: ', traversal_graph)
-                traversal_path.append(move)
-                player.travel(move)
+            q.enqueue(move)
+            print('moving ', move)
+            player.travel(move)
+            
+            if player.current_room.name not in visited_rooms:
                 break
 
-            else:
-                print("No unexplored directions in this room.")
-                print(traversal_path, ' is traversal path')
-                quit()
+
+    print("No unexplored directions in this room.")
+    continue
 
 
 if len(visited_rooms) == len(room_graph):
