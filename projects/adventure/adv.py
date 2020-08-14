@@ -71,13 +71,16 @@ while q.size() > 0:
             # update info
             visited_rooms[current_room.id][exit] = current_room.get_room_in_direction(exit).id
 
+            print('moving ', exit)
+            player.travel(exit)
+
             new_path = list(current_path)
             new_path.append(current_room.get_room_in_direction(exit))
             q.enqueue(new_path)
             traversal_path.append(exit)
 
-            print('moving ', exit)
-            player.travel(exit)
+            # print('moving ', exit)
+            # player.travel(exit)
 
 
 
