@@ -27,10 +27,10 @@ world.print_rooms()
 player = Player(world.starting_room)
 
 # Fill this out with directions to walk
-traversal_path = ['n']
+traversal_path = []
 
-q_of_paths = Queue()
-q_of_paths.enqueue(traversal_path)
+q = Queue()
+q.enqueue([traversal_path])
 
 # TRAVERSAL TEST
 visited_rooms = set()
@@ -38,11 +38,11 @@ traversal_graph = dict()
 
 player.current_room = world.starting_room
 
-print(f'in  {player.current_room.name}')
-print(f'exits: {player.current_room.get_exits()}')
 
 while len(visited_rooms) < len(room_graph):
 
+    print(f'in  {player.current_room.name}')
+    print(f'exits: {player.current_room.get_exits()}')
 
     if player.current_room.name not in visited_rooms:
         print("Haven't visited this room before. Initializing: ")
@@ -54,47 +54,35 @@ while len(visited_rooms) < len(room_graph):
             # Initialize all directions as "?" as this room has not been visited.
             traversal_graph[player.current_room.id][exit] = "?"
 
+
         try: 
             traversal_graph[player.current_room.id][direction_of_prev] = prev_room.id
         except:
-            continue
+            pass
 
         print(traversal_graph)
 
-    for move in traversal_path:
 
-        if player.current_room.get_room_in_direction(move) is not None:
-            print(' Can move ', move, ' to ', player.current_room.get_room_in_direction(move).name)
-
-            prev_room = player.current_room
-            direction_of_prev = player.current_room.return_opposite_direction(move)
-
-            traversal_graph[player.current_room.id][move] = player.current_room.get_room_in_direction(move).id
-            print(' UPDATING INFO: ', traversal_graph)
-            print('moving ', move)
-            player.travel(move)
-
-            # save prev room to this room's info
-            print(' prev room was ', prev_room.id, '. Should be recorded as ', direction_of_prev)
-            # traversal_graph[player.current_room.id][direction_of_prev] = prev_room_id
-
-            continue
-
-
-        # When cannot move in that direction, pick first "?" from dictionary
-        print(" CANNOT CONTINUE MOVING ", move)
-        
-        print(player.current_room.id, ' current room')
-        print(traversal_graph[player.current_room.id].values())
         for key, value in (traversal_graph[player.current_room.id].items()):
+
             if value == "?":
-                print(key,' will be new direction')
-                traversal_path.append(key)
-        else:
-            print('NO UNKNOWN EXITS..')
-            print(traversal_path, ' traversal path')
-            q_of_paths.enqueue(traversal_path)
-            debugger 
+                print(key,' is unexplored.')
+                move = key
+
+                prev_room = player.current_room
+                direction_of_prev = player.current_room.return_opposite_direction(move)
+
+                traversal_graph[player.current_room.id][move] = player.current_room.get_room_in_direction(move).id
+                print('moving ', move)
+                print(' UPDATING INFO: ', traversal_graph)
+                traversal_path.append(move)
+                player.travel(move)
+                break
+
+            else:
+                print("No unexplored directions in this room.")
+                print(traversal_path, ' is traversal path')
+                quit()
 
 
 if len(visited_rooms) == len(room_graph):
